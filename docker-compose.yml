@@ -1,0 +1,127 @@
+services:
+  traefik:
+    image: traefik:latest
+    container_name: ${PROJECT_NAME}_traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.http.address=:80"
+    ports:
+      - "80:80"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: ${PROJECT_NAME}_nginx
+    volumes:
+      - ./:/var/www/
+      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d
+    depends_on:
+      - app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`${PROJECT_NAME}.localhost`)"
+      - "traefik.http.routers.nginx.entrypoints=http"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    container_name: ${PROJECT_NAME}_app
+    volumes:
+      - ./:/var/www/
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.4.10
+    container_name: ${PROJECT_NAME}_db
+    restart: unless-stopped
+    volumes:
+      - ./tmp/db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_INITDB_SKIP_TZINFO: 1
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - "8101:3306"
+    command: >
+      mysqld
+      --character-set-server=utf8
+      --collation-server=utf8_unicode_ci
+      --bind-address=0.0.0.0
+      --max_allowed_packet=64M
+      --wait_timeout=28800
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: ${PROJECT_NAME}_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8090:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 100000000
+
+  typesense:
+    image: typesense/typesense:29.0
+    container_name: ${PROJECT_NAME}_typesense
+    restart: unless-stopped
+    ports:
+      - "8108:8108"
+    volumes:
+      - typesense_data:/data
+    environment:
+      TYPESENSE_API_KEY: ${TYPESENSE_API_KEY}
+    command: >
+      --data-dir /data
+      --api-key=${TYPESENSE_API_KEY}
+      --enable-cors
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+    container_name: ${PROJECT_NAME}_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.12.2
+    container_name: ${PROJECT_NAME}_kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kibana.rule=Host(`kibana.${PROJECT_NAME}.localhost`)"
+      - "traefik.http.routers.kibana.entrypoints=http"
+      - "traefik.http.services.kibana.loadbalancer.server.port=5601"
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+volumes:
+  es_data:
+  typesense_data:
+
+networks:
+  default:
+    name: ${NETWORK_NAME}_proxynet
+    external: true
