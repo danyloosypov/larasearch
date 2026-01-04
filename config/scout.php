@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'soft_delete' => false,
+    'soft_delete' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -203,6 +203,43 @@ return [
             //         'query_by' => 'name'
             //     ],
             // ],
+            \App\Models\Product::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'], // uniq_id as primary key
+                        ['name' => 'name', 'type' => 'string', "locale" => "en"],
+                        ['name' => 'brand', 'type' => 'string', "locale" => "en", 'facet' => true],
+                        ['name' => 'category', 'type' => 'string', "locale" => "en", 'facet' => true],
+                        ['name' => 'price', 'type' => 'float', 'facet' => true],
+                        ['name' => 'description', 'type' => 'string', "locale" => "en"],
+                        ['name' => 'rating', 'type' => 'string', 'facet' => true],
+                        ['name' => 'url', 'type' => 'string'],
+                        [
+                            'name' => 'embedding',
+                            'type' => 'float[]',
+                            'embed' => [
+                                'from' => ['name', 'description'],
+                                'model_config' => [
+                                    'model_name' => 'ts/all-MiniLM-L12-v2'
+                                ]
+                            ]
+                        ],
+                        ['name' => 'is_active', 'type' => 'bool', 'facet' => true],
+                        ['name' => 'image', 'type' => 'string'],
+                        ['name' => 'is_fk_advantage', 'type' => 'bool', 'facet' => true],
+                        [
+                            'name' => '__soft_deleted',
+                            'type' => 'int32',
+                            'optional' => true,
+                        ],
+                    ],
+                    'token_separators' => ["(", ")", "-", "+", "@", "."]
+                ],
+                'search-parameters' => [
+                    'query_by' => 'name,description,brand,category',
+                    'sort_by' => 'price:asc',
+                ],
+            ],
         ],
     ],
 
