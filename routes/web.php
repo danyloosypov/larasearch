@@ -372,3 +372,5 @@ Route::get('/parfumer', function (Request $request) {
         ],
     ]);
 });
+
+Route::get('/smart-search/{type}', [\App\Http\Controllers\SearchController::class, 'search'])->name('smart-search');
