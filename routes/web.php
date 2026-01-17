@@ -10,9 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::get('/search', function (Request $request) {
-
     $q         = $request->get('q', '');
     $highlight = $request->boolean('highlight', false);
 
@@ -143,22 +141,234 @@ Route::get('/search', function (Request $request) {
 });
 
 Route::get('/raystop', function (Request $request) {
-    $q = $request->get('q', '');
+    $q         = $request->get('q', '');
+    $highlight = $request->boolean('highlight', false);
 
-    $products = ProductRaystop::search($q)
-        ->paginate(20);
+    /* -----------------------------
+     | Pagination
+     |------------------------------*/
+    $page     = max(1, (int) $request->get('page', 1));
+    $perPage  = max(1, (int) $request->get('per_page', 20));
 
-    dd($products);
+    /* -----------------------------
+     | Sorting & query_by
+     |------------------------------*/
+    $sortBy  = $request->get('sort_by', 'price:asc');
 
+    // must match Raystop schema
+    $queryBy = $request->get(
+        'query_by',
+        'title,content,brand,category,model,package,types,drives,engines'
+    );
+
+    /* -----------------------------
+     | Build filter_by
+     |------------------------------*/
+    $filters = [];
+
+    // facet filters
+    foreach (['brand', 'category', 'model', 'package'] as $field) {
+        if ($request->filled($field)) {
+            $values = (array) $request->get($field);
+            $filters[] = $field . ':=[' . implode(',', array_map('addslashes', $values)) . ']';
+        }
+    }
+
+    // array facets
+    foreach (['types', 'drives', 'engines'] as $field) {
+        if ($request->filled($field)) {
+            $values = (array) $request->get($field);
+            $filters[] = $field . ':=[' . implode(',', array_map('addslashes', $values)) . ']';
+        }
+    }
+
+    // price range
+    if ($request->filled('price_min') || $request->filled('price_max')) {
+        $min = $request->get('price_min', '*');
+        $max = $request->get('price_max', '*');
+        $filters[] = "price:>={$min} && price:<={$max}";
+    }
+
+    $filterBy = $filters ? implode(' && ', $filters) : null;
+
+    /* -----------------------------
+     | Typesense options
+     |------------------------------*/
+    $options = array_filter([
+        'query_by'  => $queryBy,
+        'sort_by'   => $sortBy,
+        'filter_by' => $filterBy,
+        'page'      => $page,
+        'per_page'  => $perPage,
+    ]);
+
+    if ($highlight) {
+        $options['highlight_full_fields'] = $queryBy;
+        $options['highlight_start_tag']   = '<span class="highlight">';
+        $options['highlight_end_tag']     = '</span>';
+    }
+
+    /* -----------------------------
+     | Execute Typesense search
+     |------------------------------*/
+    $raw = ProductRaystop::search($q)
+        ->options($options)
+        ->raw();
+
+    $hits  = $raw['hits'] ?? [];
+    $found = $raw['found'] ?? 0;
+
+    /* -----------------------------
+     | Map to Eloquent models
+     |------------------------------*/
+    $ids = collect($hits)->pluck('document.id')->all();
+
+    $products = ProductRaystop::whereIn('id', $ids)
+        ->get()
+        ->keyBy('id');
+
+    $results = collect($hits)->map(function ($hit) use ($products, $highlight) {
+        $product = $products[$hit['document']['id']] ?? null;
+        if (!$product) {
+            return null;
+        }
+
+        if ($highlight && isset($hit['highlights'])) {
+            foreach ($hit['highlights'] as $hl) {
+                if (!empty($hl['snippet'])) {
+                    $product->setAttribute($hl['field'], $hl['snippet']);
+                }
+            }
+        }
+
+        return $product;
+    })->filter()->values();
+
+    /* -----------------------------
+     | Response
+     |------------------------------*/
+    return response()->json([
+        'data' => $results,
+        'meta' => [
+            'total'     => $found,
+            'page'      => $page,
+            'per_page'  => $perPage,
+            'last_page' => (int) ceil($found / $perPage),
+        ],
+    ]);
 });
 
 Route::get('/parfumer', function (Request $request) {
-    $q = $request->get('q', '');
+    $q         = $request->get('q', '');
+    $highlight = $request->boolean('highlight', false);
 
-    $products = ProductParfumer::search($q)
-        ->paginate(20);
+    /* -----------------------------
+     | Pagination
+     |------------------------------*/
+    $page     = max(1, (int) $request->get('page', 1));
+    $perPage  = max(1, (int) $request->get('per_page', 20));
 
-    dd($products);
+    /* -----------------------------
+     | Sorting & query_by
+     |------------------------------*/
+    $sortBy  = $request->get('sort_by', 'price:asc');
 
+    // MUST match schema fields
+    $queryBy = $request->get(
+        'query_by',
+        'title,title_additional,sku,content,composition,uses,brand,categories,characteristics,filterFields,attributes'
+    );
+
+    /* -----------------------------
+     | Build filter_by
+     |------------------------------*/
+    $filters = [];
+
+    // single-value facet
+    if ($request->filled('brand')) {
+        $filters[] = 'brand:=' . addslashes($request->get('brand'));
+    }
+
+    // array facets
+    foreach (['categories', 'characteristics', 'filterFields', 'attributes'] as $field) {
+        if ($request->filled($field)) {
+            $values = (array) $request->get($field);
+            $filters[] = $field . ':=[' . implode(',', array_map('addslashes', $values)) . ']';
+        }
+    }
+
+    // price range
+    if ($request->filled('price_min') || $request->filled('price_max')) {
+        $min = $request->get('price_min', '*');
+        $max = $request->get('price_max', '*');
+        $filters[] = "price:>={$min} && price:<={$max}";
+    }
+
+    $filterBy = $filters ? implode(' && ', $filters) : null;
+
+    /* -----------------------------
+     | Typesense options
+     |------------------------------*/
+    $options = array_filter([
+        'query_by'  => $queryBy,
+        'sort_by'   => $sortBy,
+        'filter_by' => $filterBy,
+        'page'      => $page,
+        'per_page'  => $perPage,
+    ]);
+
+    if ($highlight) {
+        $options['highlight_full_fields'] = $queryBy;
+        $options['highlight_start_tag']   = '<span class="highlight">';
+        $options['highlight_end_tag']     = '</span>';
+    }
+
+    /* -----------------------------
+     | Execute Typesense search
+     |------------------------------*/
+    $raw = ProductParfumer::search($q)
+        ->options($options)
+        ->raw();
+
+    $hits  = $raw['hits'] ?? [];
+    $found = $raw['found'] ?? 0;
+
+    /* -----------------------------
+     | Map hits → Eloquent models
+     |------------------------------*/
+    $ids = collect($hits)->pluck('document.id')->all();
+
+    $products = ProductParfumer::whereIn('id', $ids)
+        ->get()
+        ->keyBy('id');
+
+    $results = collect($hits)->map(function ($hit) use ($products, $highlight) {
+        $product = $products[$hit['document']['id']] ?? null;
+        if (!$product) {
+            return null;
+        }
+
+        if ($highlight && isset($hit['highlights'])) {
+            foreach ($hit['highlights'] as $hl) {
+                if (!empty($hl['snippet'])) {
+                    $product->setAttribute($hl['field'], $hl['snippet']);
+                }
+            }
+        }
+
+        return $product;
+    })->filter()->values();
+
+    /* -----------------------------
+     | Response
+     |------------------------------*/
+    return response()->json([
+        'data' => $results,
+        'meta' => [
+            'total'     => $found,
+            'page'      => $page,
+            'per_page'  => $perPage,
+            'last_page' => (int) ceil($found / $perPage),
+        ],
+    ]);
 });
-
