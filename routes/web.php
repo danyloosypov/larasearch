@@ -3,6 +3,8 @@
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Models\Raystop\Product as ProductRaystop;
+use App\Models\Parfumer\Product as ProductParfumer;
 
 Route::get('/', function () {
     return view('welcome');
@@ -138,5 +140,25 @@ Route::get('/search', function (Request $request) {
             'last_page' => (int) ceil($found / $perPage),
         ],
     ]);
+});
+
+Route::get('/raystop', function (Request $request) {
+    $q = $request->get('q', '');
+
+    $products = ProductRaystop::search($q)
+        ->paginate(20);
+
+    dd($products);
+
+});
+
+Route::get('/parfumer', function (Request $request) {
+    $q = $request->get('q', '');
+
+    $products = ProductParfumer::search($q)
+        ->paginate(20);
+
+    dd($products);
+
 });
 

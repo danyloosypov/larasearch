@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $table = 'products_uk';
 
@@ -78,5 +79,72 @@ class Product extends Model
                         ->orWhere('id_brands', 0);
                 });
         });
+    }
+
+    public function searchableAs(): string
+    {
+        return 'parfumer_products';
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+
+            'title'             => $this->title ?? '',
+            'title_additional'  => $this->title_additional ?? '',
+            'sku'  => $this->sku ?? '',
+            'content'           => strip_tags($this->content ?? ''),
+            'composition'       => strip_tags($this->composition ?? ''),
+            'uses'              => strip_tags($this->uses ?? ''),
+
+            'price'             => (float) $this->price,
+
+            'categories' => collect($this->categories ?? [])
+                ->pluck('title')
+                ->filter(fn ($v) => is_scalar($v) && $v !== '')
+                ->map(fn ($v) => (string) $v)
+                ->values()
+                ->all(),
+
+            'characteristics' => collect($this->characteristics ?? [])
+                ->pluck('value')
+                ->filter(fn ($v) => is_scalar($v) && $v !== '')
+                ->map(fn ($v) => (string) $v)
+                ->values()
+                ->all(),
+
+            'filterFields' => collect($this->filterFields ?? [])
+                ->pluck('title')
+                ->filter(fn ($v) => is_scalar($v) && $v !== '')
+                ->map(fn ($v) => (string) $v)
+                ->values()
+                ->all(),
+
+            'attributes' => collect($this->attributes ?? [])
+                ->pluck('title')
+                ->filter(fn ($v) => is_scalar($v) && $v !== '')
+                ->map(fn ($v) => (string) $v)
+                ->values()
+                ->all(),
+
+            'brand'          => $this->brand?->title ?? '',
+        ];
+    }
+
+    protected function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with([
+            'categories:id,title',
+            'brand:id,title',
+            'characteristics:id,title,value',
+            'filterFields:id,title',
+            'attributes:id,title',
+        ]);
+    }
+
+    public function shouldBeSearchable(): bool
+    {
+        return (bool) $this->is_show;
     }
 }

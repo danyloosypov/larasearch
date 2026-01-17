@@ -4,10 +4,12 @@ namespace App\Models\Raystop;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Laravel\Scout\Searchable;
 
 class Product extends Model
 {
-    use HasFactory;
+    use Searchable, HasFactory;
 
     protected $table = 'products_pl';
     protected $fillable = [
@@ -137,5 +139,43 @@ class Product extends Model
             2 => 1,
             default => null,
         };
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'title' => $this->title ?? '',
+            'price' => (float) $this->price ?? '',
+            'content' => $this->content ?? '',
+
+            'category' => optional($this->category)->title ?? '',
+            'brand'    => optional($this->brand)->title ?? '',
+            'model'    => optional($this->model)->title ?? '',
+            'package'  => optional($this->package)->title ?? '',
+
+            // many-to-many → array of strings
+            'types'   => $this->types?->pluck('title')->values()->all() ?? [],
+            'drives'  => $this->drives?->pluck('title')->values()->all() ?? [],
+            'engines' => $this->engines?->pluck('title')->values()->all() ?? [],
+        ];
+    }
+
+    protected function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with([
+            'category:id,title',
+            'brand:id,title',
+            'model:id,title',
+            'package:id,title',
+            'types:id,title',
+            'drives:id,title',
+            'engines:id,title',
+        ]);
+    }
+
+    public function shouldBeSearchable(): bool
+    {
+        return (bool) $this->is_show;
     }
 }

@@ -203,6 +203,57 @@ return [
             //         'query_by' => 'name'
             //     ],
             // ],
+            \App\Models\Parfumer\Product::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'],
+
+                        ['name' => 'title', 'type' => 'string'],
+                        ['name' => 'title_additional', 'type' => 'string'],
+                        ['name' => 'sku', 'type' => 'string'],
+
+                        ['name' => 'content', 'type' => 'string'],
+                        ['name' => 'composition', 'type' => 'string'],
+                        ['name' => 'uses', 'type' => 'string'],
+                        ['name' => 'price', 'type' => 'float'],
+
+                        ['name' => 'brand', 'type' => 'string', 'facet' => true],
+
+                        ['name' => 'categories', 'type' => 'string[]', 'facet' => true],
+                        ['name' => 'characteristics', 'type' => 'string[]', 'facet' => true],
+                        ['name' => 'filterFields', 'type' => 'string[]', 'facet' => true],
+                        ['name' => 'attributes', 'type' => 'string[]', 'facet' => true],
+                    ],
+                    'default_sorting_field' => 'price',
+                ],
+                'search-parameters' => [
+                    'query_by' => 'title,title_additional,sku,content,composition,uses,brand,categories,characteristics,filterFields,attributes',
+                ],
+            ],
+            \App\Models\Raystop\Product::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'],
+
+                        ['name' => 'title', 'type' => 'string'],
+                        ['name' => 'content', 'type' => 'string'],
+                        ['name' => 'price', 'type' => 'float'],
+
+                        ['name' => 'category', 'type' => 'string', 'facet' => true],
+                        ['name' => 'brand', 'type' => 'string', 'facet' => true],
+                        ['name' => 'model', 'type' => 'string', 'facet' => true],
+                        ['name' => 'package', 'type' => 'string', 'facet' => true],
+
+                        ['name' => 'types', 'type' => 'string[]', 'facet' => true],
+                        ['name' => 'drives', 'type' => 'string[]', 'facet' => true],
+                        ['name' => 'engines', 'type' => 'string[]', 'facet' => true],
+                    ],
+                    'default_sorting_field' => 'price',
+                ],
+                'search-parameters' => [
+                    'query_by' => 'title,content,brand,category,model,package,types,drives,engines',
+                ],
+            ],
             \App\Models\Product::class => [
                 'collection-schema' => [
                     'fields' => [
