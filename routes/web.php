@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Raystop\Product as ProductRaystop;
 use App\Models\Parfumer\Product as ProductParfumer;
+use JeroenG\Explorer\Infrastructure\Scout\ElasticEngine;
+use JeroenG\Explorer\Domain\Syntax\Term;
+use JeroenG\Explorer\Domain\Syntax\Exists;
+use JeroenG\Explorer\Domain\Syntax\Range;
+use JeroenG\Explorer\Domain\Syntax\BoolQuery;
 
 Route::get('/', function () {
     return view('welcome');
@@ -371,6 +376,42 @@ Route::get('/parfumer', function (Request $request) {
             'last_page' => (int) ceil($found / $perPage),
         ],
     ]);
+});
+
+Route::get('/elasticsearch', function (Request $request) {
+    $q = $request->get('q', '');
+    $brand    = $request->get('brand');
+    $minPrice = $request->get('price_min');
+    $maxPrice = $request->get('price_max');
+
+    $search = \App\Models\Elastic\Product::search($q);
+
+    // brand exists
+    $search->filter(
+        (new Exists())->field('brand')
+    );
+
+    // optional exact brand filter
+    if ($request->filled('brand')) {
+        $search->filter(new Term('brand.keyword', $request->brand));
+    }
+
+    // price range
+    if ($minPrice !== null || $maxPrice !== null) {
+        $search->filter(
+            new Range('price', array_filter([
+                'gte' => $minPrice,
+                'lte' => $maxPrice,
+            ]))
+        );
+    }
+
+    $results = $search->paginate(10);
+
+    dd(
+        ElasticEngine::debug()->json(),
+        $results
+    );
 });
 
 Route::get('/smart-search/{type}', [\App\Http\Controllers\SearchController::class, 'search'])->name('smart-search');

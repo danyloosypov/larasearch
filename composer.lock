@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a50eb7a08ad89167e0e782d17f53f11f",
+    "content-hash": "6c5b09d4d2a2fc5dece0172f42dc9b1b",
     "packages": [
         {
             "name": "brick/math",
@@ -575,6 +575,121 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
+            "name": "elastic/transport",
+            "version": "v8.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elastic/elastic-transport-php.git",
+                "reference": "1d476af5dc0b74530d59b67d5dd96ee39768d5a4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elastic/elastic-transport-php/zipball/1d476af5dc0b74530d59b67d5dd96ee39768d5a4",
+                "reference": "1d476af5dc0b74530d59b67d5dd96ee39768d5a4",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.0",
+                "open-telemetry/api": "^1.0",
+                "php": "^7.4 || ^8.0",
+                "php-http/discovery": "^1.14",
+                "php-http/httplug": "^2.3",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0 || ^2.0",
+                "psr/log": "^1 || ^2 || ^3"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.5",
+                "open-telemetry/sdk": "^1.0",
+                "php-http/mock-client": "^1.5",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^9.5",
+                "symfony/http-client": "^5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Elastic\\Transport\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "HTTP transport PHP library for Elastic products",
+            "keywords": [
+                "PSR_17",
+                "elastic",
+                "http",
+                "psr-18",
+                "psr-7",
+                "transport"
+            ],
+            "support": {
+                "issues": "https://github.com/elastic/elastic-transport-php/issues",
+                "source": "https://github.com/elastic/elastic-transport-php/tree/v8.11.0"
+            },
+            "time": "2025-04-02T08:20:33+00:00"
+        },
+        {
+            "name": "elasticsearch/elasticsearch",
+            "version": "v8.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elastic/elasticsearch-php.git",
+                "reference": "1771284cb43a7b653634d418b6f5f0ec84ff8a6d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/1771284cb43a7b653634d418b6f5f0ec84ff8a6d",
+                "reference": "1771284cb43a7b653634d418b6f5f0ec84ff8a6d",
+                "shasum": ""
+            },
+            "require": {
+                "elastic/transport": "^8.11",
+                "guzzlehttp/guzzle": "^7.0",
+                "php": "^7.4 || ^8.0",
+                "psr/http-client": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "psr/log": "^1|^2|^3"
+            },
+            "require-dev": {
+                "ext-yaml": "*",
+                "ext-zip": "*",
+                "mockery/mockery": "^1.5",
+                "nyholm/psr7": "^1.5",
+                "php-http/mock-client": "^1.5",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^9.5",
+                "psr/http-factory": "^1.0",
+                "symfony/finder": "~4.0",
+                "symfony/http-client": "^5.0|^6.0|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Elastic\\Elasticsearch\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP Client for Elasticsearch",
+            "keywords": [
+                "client",
+                "elastic",
+                "elasticsearch",
+                "search"
+            ],
+            "support": {
+                "issues": "https://github.com/elastic/elasticsearch-php/issues",
+                "source": "https://github.com/elastic/elasticsearch-php/tree/v8.19.0"
+            },
+            "time": "2025-08-06T16:58:06+00:00"
+        },
+        {
             "name": "fruitcake/php-cors",
             "version": "v1.4.0",
             "source": {
@@ -1117,6 +1232,78 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
+        },
+        {
+            "name": "jeroen-g/explorer",
+            "version": "4.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jeroen-G/Explorer.git",
+                "reference": "065e70ff3721a1403c91b9854d5b2b8a4a1188f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jeroen-G/Explorer/zipball/065e70ff3721a1403c91b9854d5b2b8a4a1188f3",
+                "reference": "065e70ff3721a1403c91b9854d5b2b8a4a1188f3",
+                "shasum": ""
+            },
+            "require": {
+                "elasticsearch/elasticsearch": "^8.0",
+                "illuminate/support": "^11.0|^12.0",
+                "laravel/scout": "^10.0",
+                "php": "^8.2",
+                "psr/log": "^3",
+                "webmozart/assert": "^1.11|^2.0"
+            },
+            "require-dev": {
+                "dg/bypass-finals": "^1.8",
+                "infection/infection": "^0.29",
+                "mockery/mockery": "^1.5",
+                "nunomaduro/larastan": "^2.5",
+                "orchestra/testbench": "*",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpunit/phpunit": "^10.0",
+                "symplify/easy-coding-standard": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JeroenG\\Explorer\\ExplorerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JeroenG\\Explorer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeroen",
+                    "email": "jeroengjeroeng@gmail.com",
+                    "homepage": "https://jeroeng.dev"
+                }
+            ],
+            "description": "Next-gen Elasticsearch driver for Laravel Scout.",
+            "homepage": "https://jeroen-g.github.io/Explorer/",
+            "keywords": [
+                "elastic",
+                "elasticsearch",
+                "explorer",
+                "laravel",
+                "scout",
+                "search"
+            ],
+            "support": {
+                "issues": "https://github.com/Jeroen-G/Explorer/issues",
+                "source": "https://github.com/Jeroen-G/Explorer/tree/4.3.0"
+            },
+            "time": "2025-12-19T11:40:36+00:00"
         },
         {
             "name": "laravel/framework",
@@ -2749,6 +2936,135 @@
                 }
             ],
             "time": "2024-09-09T07:06:30+00:00"
+        },
+        {
+            "name": "open-telemetry/api",
+            "version": "1.7.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/api.git",
+                "reference": "45bda7efa8fcdd9bdb0daa2f26c8e31f062f49d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/45bda7efa8fcdd9bdb0daa2f26c8e31f062f49d4",
+                "reference": "45bda7efa8fcdd9bdb0daa2f26c8e31f062f49d4",
+                "shasum": ""
+            },
+            "require": {
+                "open-telemetry/context": "^1.4",
+                "php": "^8.1",
+                "psr/log": "^1.1|^2.0|^3.0",
+                "symfony/polyfill-php82": "^1.26"
+            },
+            "conflict": {
+                "open-telemetry/sdk": "<=1.0.8"
+            },
+            "type": "library",
+            "extra": {
+                "spi": {
+                    "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
+                        "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "1.8.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Trace/functions.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\API\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "API for OpenTelemetry PHP.",
+            "keywords": [
+                "Metrics",
+                "api",
+                "apm",
+                "logging",
+                "opentelemetry",
+                "otel",
+                "tracing"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2025-10-19T10:49:48+00:00"
+        },
+        {
+            "name": "open-telemetry/context",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/context.git",
+                "reference": "d4c4470b541ce72000d18c339cfee633e4c8e0cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/d4c4470b541ce72000d18c339cfee633e4c8e0cf",
+                "reference": "d4c4470b541ce72000d18c339cfee633e4c8e0cf",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "symfony/polyfill-php82": "^1.26"
+            },
+            "suggest": {
+                "ext-ffi": "To allow context switching in Fibers"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "fiber/initialize_fiber_handler.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\Context\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "Context implementation for OpenTelemetry PHP.",
+            "keywords": [
+                "Context",
+                "opentelemetry",
+                "otel"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2025-09-19T00:05:49+00:00"
         },
         {
             "name": "php-http/client-common",
@@ -5492,6 +5808,86 @@
             "time": "2025-01-02T08:10:11+00:00"
         },
         {
+            "name": "symfony/polyfill-php82",
+            "version": "v1.33.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php82.git",
+                "reference": "5d2ed36f7734637dacc025f179698031951b1692"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php82/zipball/5d2ed36f7734637dacc025f179698031951b1692",
+                "reference": "5d2ed36f7734637dacc025f179698031951b1692",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php82\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.2+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php82/tree/v1.33.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-09T11:45:10+00:00"
+        },
+        {
             "name": "symfony/polyfill-php83",
             "version": "v1.33.0",
             "source": {
@@ -6772,6 +7168,68 @@
                 }
             ],
             "time": "2024-11-21T01:49:47+00:00"
+        },
+        {
+            "name": "webmozart/assert",
+            "version": "2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webmozarts/assert.git",
+                "reference": "ce6a2f100c404b2d32a1dd1270f9b59ad4f57649"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/ce6a2f100c404b2d32a1dd1270f9b59ad4f57649",
+                "reference": "ce6a2f100c404b2d32a1dd1270f9b59ad4f57649",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-date": "*",
+                "ext-filter": "*",
+                "php": "^8.2"
+            },
+            "suggest": {
+                "ext-intl": "",
+                "ext-simplexml": "",
+                "ext-spl": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-feature/2-0": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webmozart\\Assert\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Woody Gilk",
+                    "email": "woody.gilk@gmail.com"
+                }
+            ],
+            "description": "Assertions to validate method input/output with nice error messages.",
+            "keywords": [
+                "assert",
+                "check",
+                "validate"
+            ],
+            "support": {
+                "issues": "https://github.com/webmozarts/assert/issues",
+                "source": "https://github.com/webmozarts/assert/tree/2.1.2"
+            },
+            "time": "2026-01-13T14:02:24+00:00"
         }
     ],
     "packages-dev": [
@@ -9140,12 +9598,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
